@@ -1,8 +1,14 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:true_ishq/configs/api.config.dart';
 import 'package:true_ishq/models/user.dart';
 import 'package:true_ishq/utilities/helpers.dart';
 import 'package:http/http.dart' as http;
 import "dart:convert" as convert;
+
+import '../../configs/api.config.dart';
+import '../../utilities/helpers.dart';
 
 Future<User> createUser(User user) async {
   printWrapped("sending user json: ");
@@ -25,6 +31,48 @@ Future<User> createUser(User user) async {
     return user;
   } else {
     throw convert.jsonDecode(response.body);
+  }
+}
+
+Future<User> setProfilePicture(User user, File image) async {
+  String url = ApiConfig.apiScheme +
+      "://" +
+      ApiConfig.apiUrl +
+      "/api/users/setProfilePicture";
+  Dio dio = new Dio();
+  String fileName = image.path.split('/').last;
+
+  FormData formData = FormData.fromMap({
+    "files": await MultipartFile.fromFile(image.path, filename: fileName),
+  });
+
+  var queryParams = {
+    '_id': user.id,
+  };
+
+  // queryParams.update("_id", user.id as dynamic);
+
+  printWrapped("queryParams: ");
+  printWrapped(queryParams.toString());
+
+  Response response = await dio.post(url,
+      data: formData,
+      queryParameters: queryParams,
+      options: Options(headers: {
+        "Accept": "application/json"
+      },
+      responseType: ResponseType.json));
+
+  printWrapped(response.toString());
+  printWrapped(response.statusCode.toString());
+
+  if (response.statusCode == 200) {
+    user.profile.profilePic = response.data['url'];
+    printWrapped("returning user: ");
+    printWrapped(user.toString());
+    return user;
+  } else {
+    throw convert.jsonDecode(response.data);
   }
 }
 

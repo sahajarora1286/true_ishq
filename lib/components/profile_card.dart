@@ -37,9 +37,9 @@ class ProfileCardWidget extends StatelessWidget {
                         topLeft: new Radius.circular(8.0),
                         topRight: new Radius.circular(8.0)),
                     image: new DecorationImage(
-                      image: new ExactAssetImage(user.profile.profilePic != null
-                          ? user.profile.profilePic
-                          : image),
+                      image: user.profile.profilePic != null
+                          ? new NetworkImage(user.profile.profilePic)
+                          : new ExactAssetImage(image),
                       fit: BoxFit.cover,
                     ),
                   ),

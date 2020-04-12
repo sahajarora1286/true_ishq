@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:true_ishq/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import "../services/api/user-api.service.dart" as apiService;
+import 'swiper.dart';
 
 class RegisterPictureController extends StatefulWidget {
   RegisterPictureController({Key key, this.title, this.user}) : super(key: key);
@@ -44,6 +46,22 @@ class _RegisterPictureControllerState extends State<RegisterPictureController> {
     });
   }
 
+  void uploadImage() async {
+    print('uploading');
+    // formData.add("files", new UploadFileInfo(imageFile, basename(imageFile.path)));
+    await apiService.setProfilePicture(this.user, this.imageFile).then(
+      (result) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                SwiperController(title: "True Ishq"),
+          ),
+        );
+      },
+    ).catchError((error) {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -72,6 +90,18 @@ class _RegisterPictureControllerState extends State<RegisterPictureController> {
                 child: imageFile != null
                     ? Image.file(imageFile)
                     : Icon(Icons.add_a_photo),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: RaisedButton(
+                  onPressed: () async {
+                    if (imageFile != null) {
+                      uploadImage();
+                    }
+                  },
+                  child: Text('Get Started'),
+                  color: Colors.orange,
+                ),
               ),
             ],
           ),

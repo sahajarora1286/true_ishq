@@ -144,6 +144,7 @@ class _RegisterBasicControllerState extends State<RegisterBasicController> {
                       _formKey.currentState.save();
                       await apiService.createUser(this.user).then(
                         (result) {
+                          this.user = result;
                           Navigator.push(
                             context,
                             MaterialPageRoute(
