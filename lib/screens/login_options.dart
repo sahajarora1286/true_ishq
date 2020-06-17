@@ -29,9 +29,9 @@ class _LoginOptionsControllerState extends State<LoginOptionsController> {
   }
 
   _fetchUsers() async {
-    await apiService.getUsers().then((dynamic result) {
-      printWrapped('result from getData: ' + result.toString());
-    });
+    // await apiService.getUsers().then((dynamic result) {
+    //   printWrapped('result from getData: ' + result.toString());
+    // });
   }
 
   @override

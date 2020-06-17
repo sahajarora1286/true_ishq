@@ -27,6 +27,7 @@ class LoginPhoneController extends StatefulWidget {
 class _LoginPhoneControllerState extends State<LoginPhoneController> {
   final _formKey = GlobalKey<FormState>();
   User user = new User();
+  bool _isLoading;
 
   @override
   void initState() {
@@ -66,47 +67,73 @@ class _LoginPhoneControllerState extends State<LoginPhoneController> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: RaisedButton(
-                  onPressed: () async {
-                    // Validate returns true if the form is valid, or false
-                    // otherwise.
-                    if (_formKey.currentState.validate()) {
-                      _formKey.currentState.save();
-
-                      await apiService.getUserByPhone(this.user).then(
-                        (result) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LoginPasswordController(
-                                title: "Login",
-                                user: this.user,
-                              ),
-                            ),
-                          );
+                child: _isLoading == true
+                    ? _showCircularProgress()
+                    : RaisedButton(
+                        onPressed: () async {
+                          // Validate returns true if the form is valid, or false
+                          // otherwise.
+                            _continuePressed();
                         },
-                      ).catchError((error) {
-                        printWrapped(error.toString());
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegisterBasicController(
-                              title: "Profile",
-                              user: this.user,
-                            ),
-                          ),
-                        );
-                      });
-                    }
-                  },
-                  child: Text('Continue'),
-                  color: Colors.orange,
-                ),
+                        child: Text('Continue'),
+                        color: Colors.orange,
+                      ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _showCircularProgress() {
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return Container(
+      height: 0.0,
+      width: 0.0,
+    );
+  }
+
+  _continuePressed() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    _formKey.currentState.save();
+
+    setState(() {
+      _isLoading = true;
+    });
+    apiService.getUserByPhone(this.user).then(
+      (result) {
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPasswordController(
+              title: "Login",
+              user: this.user,
+            ),
+          ),
+        );
+      },
+    ).catchError((error) {
+      printWrapped(error.toString());
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RegisterBasicController(
+            title: "Profile",
+            user: this.user,
+          ),
+        ),
+      );
+    });
   }
 }

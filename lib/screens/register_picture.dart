@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
+import 'package:provider/provider.dart';
 import 'package:true_ishq/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:true_ishq/services/auth.service.dart';
 import "../services/api/user-api.service.dart" as apiService;
-import 'swiper.dart';
+import '../utilities/helpers.dart';
 
 class RegisterPictureController extends StatefulWidget {
   RegisterPictureController({Key key, this.title, this.user}) : super(key: key);
@@ -31,6 +32,8 @@ class RegisterPictureController extends StatefulWidget {
 class _RegisterPictureControllerState extends State<RegisterPictureController> {
   User user = new User();
   File imageFile;
+  bool _isLoading;
+  var authService;
 
   @override
   void initState() {
@@ -46,24 +49,36 @@ class _RegisterPictureControllerState extends State<RegisterPictureController> {
     });
   }
 
-  void uploadImage() async {
+  void uploadImage(BuildContext context) async {
     print('uploading');
-    // formData.add("files", new UploadFileInfo(imageFile, basename(imageFile.path)));
+    setState(() {
+      _isLoading = true;
+    });
+
     await apiService.setProfilePicture(this.user, this.imageFile).then(
-      (result) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                SwiperController(title: "True Ishq"),
-          ),
-        );
+      (result) async {
+        setState(() {
+          _isLoading = false;
+        });
+
+        user = result;
+
+        await authService.loginUser(user);
+
+        Navigator.popUntil(
+            context, ModalRoute.withName(Navigator.defaultRouteName));
+
       },
-    ).catchError((error) {});
+    ).catchError((error) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    authService = Provider.of<AuthService>(context);
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,
@@ -93,20 +108,32 @@ class _RegisterPictureControllerState extends State<RegisterPictureController> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: RaisedButton(
-                  onPressed: () async {
-                    if (imageFile != null) {
-                      uploadImage();
-                    }
-                  },
-                  child: Text('Get Started'),
-                  color: Colors.orange,
-                ),
+                child: _isLoading == true
+                    ? _showCircularProgress()
+                    : RaisedButton(
+                        onPressed: () async {
+                          if (imageFile != null) {
+                            uploadImage(context);
+                          }
+                        },
+                        child: Text('Get Started'),
+                        color: Colors.orange,
+                      ),
               ),
             ],
           ),
         ),
       )),
+    );
+  }
+
+  Widget _showCircularProgress() {
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return Container(
+      height: 0.0,
+      width: 0.0,
     );
   }
 }

@@ -1,9 +1,11 @@
+import 'package:provider/provider.dart';
 import 'package:true_ishq/components/custom_text_form_field.dart';
 import 'package:true_ishq/models/profile.dart';
 import 'package:true_ishq/models/user.dart';
 import 'package:true_ishq/screens/register_picture.dart';
 import 'package:true_ishq/screens/swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:true_ishq/services/auth.service.dart';
 import "../services/api/user-api.service.dart" as apiService;
 
 class RegisterBasicController extends StatefulWidget {
@@ -29,6 +31,8 @@ class RegisterBasicController extends StatefulWidget {
 class _RegisterBasicControllerState extends State<RegisterBasicController> {
   final _formKey = GlobalKey<FormState>();
   User user = new User(profile: new Profile());
+  bool _isLoading;
+  var authService;
 
   @override
   void initState() {
@@ -39,6 +43,7 @@ class _RegisterBasicControllerState extends State<RegisterBasicController> {
 
   @override
   Widget build(BuildContext context) {
+    authService = Provider.of<AuthService>(context);
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,
@@ -136,34 +141,58 @@ class _RegisterBasicControllerState extends State<RegisterBasicController> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: RaisedButton(
-                  onPressed: () async {
-                    // Validate returns true if the form is valid, or false
-                    // otherwise.
-                    if (_formKey.currentState.validate()) {
-                      _formKey.currentState.save();
-                      await apiService.createUser(this.user).then(
-                        (result) {
-                          this.user = result;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RegisterPictureController(
-                                  title: "Profile", user: this.user),
-                            ),
-                          );
+                child: _isLoading == true
+                    ? _showCircularProgress()
+                    : RaisedButton(
+                        onPressed: () async {
+                          _continuePressed();
                         },
-                      ).catchError((error) {});
-                    }
-                  },
-                  child: Text('Continue'),
-                  color: Colors.orange,
-                ),
+                        child: Text('Continue'),
+                        color: Colors.orange,
+                      ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _showCircularProgress() {
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return Container(
+      height: 0.0,
+      width: 0.0,
+    );
+  }
+
+  _continuePressed() {
+    // Validate returns true if the form is valid, or false
+    // otherwise.
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    _formKey.currentState.save();
+
+    setState(() {
+      _isLoading = true;
+    });
+    apiService.createUser(user).then(
+      (result) async {
+        setState(() {
+          _isLoading = false;
+        });
+        user = result;
+        await authService.loginUser(user);
+        Navigator.popUntil(
+            context, ModalRoute.withName(Navigator.defaultRouteName));
+      },
+    ).catchError((error) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 }

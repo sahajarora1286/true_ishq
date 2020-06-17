@@ -34,6 +34,38 @@ Future<User> createUser(User user) async {
   }
 }
 
+Future<dynamic> likeUser(User user, User likeUser) async {
+  printWrapped("sending user json: ");
+  printWrapped(convert.jsonEncode(user.toJson()));
+  printWrapped("sending likeUser json: ");
+  printWrapped(convert.jsonEncode(likeUser.toJson()));
+  printWrapped('sending body: ');
+  printWrapped(convert.jsonEncode({
+      '_id': user.id,
+      'likeUserId': likeUser.id
+    }));
+
+  var uri = Uri.http(ApiConfig.apiUrl, '/api/users/like');
+
+  http.Response response = await http.post(
+    uri,
+    headers: {"Content-Type": "application/json", "Accept": "application/json"},
+    body: convert.jsonEncode({
+      '_id': user.id,
+      'likeUserId': likeUser.id
+    }),
+  );
+
+  printWrapped(response.body);
+  printWrapped(response.statusCode.toString());
+
+  if (response.statusCode == 200) {
+    return convert.jsonDecode(response.body);
+  } else {
+    throw convert.jsonDecode(response.body);
+  }
+}
+
 Future<User> setProfilePicture(User user, File image) async {
   String url = ApiConfig.apiScheme +
       "://" +
@@ -89,10 +121,13 @@ Future<User> login(User user) async {
   printWrapped(response.body);
   printWrapped(response.statusCode.toString());
 
+
   if (response.statusCode == 200) {
     return new User.fromJson(convert.jsonDecode(response.body));
   } else {
-    throw convert.jsonDecode(convert.jsonDecode(response.body));
+    printWrapped('throwing error: ' );
+    // printWrapped(convert.jsonDecode(response.body)['error']['message']);
+    throw convert.jsonDecode(response.body)['error']['message'];
   }
 }
 
@@ -131,8 +166,8 @@ Future<List<User>> getUsers() async {
   if (response.statusCode == 200) {
     List usersJson = convert.jsonDecode(response.body);
     List<User> users = usersJson.map((i) => User.fromJson(i)).toList();
-    print("users list: ");
-    print(convert.jsonEncode(users));
+    // print("users list: ");
+    // print(convert.jsonEncode(users));
     return users;
   } else {
     throw convert.jsonDecode(convert.jsonDecode(response.body));
