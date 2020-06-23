@@ -44,15 +44,16 @@ class _LoginPhoneControllerState extends State<LoginPhoneController> {
           textAlign: TextAlign.center,
         ),
       ),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Form(
         key: _formKey,
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: ListView(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: CustomTextFormFieldWidget(
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomTextFormFieldWidget(
                   icon: Icon(Icons.phone),
                   hintText: "phone number",
                   type: TextInputType.phone,
@@ -64,22 +65,54 @@ class _LoginPhoneControllerState extends State<LoginPhoneController> {
                   },
                   onSaved: (val) => setState(() => this.user.phone = val),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: _isLoading == true
-                    ? _showCircularProgress()
-                    : RaisedButton(
-                        onPressed: () async {
-                          // Validate returns true if the form is valid, or false
-                          // otherwise.
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: _isLoading == true
+                      ? _showCircularProgress()
+                      : RaisedButton(
+                          onPressed: () async {
+                            // Validate returns true if the form is valid, or false
+                            // otherwise.
                             _continuePressed();
-                        },
-                        child: Text('Continue'),
-                        color: Colors.orange,
-                      ),
-              ),
-            ],
+                          },
+                          child: Text('Continue'),
+                        ),
+                ),
+              ],
+            ),
+
+            // child: ListView(
+            //   children: <Widget>[
+            //     Container(
+            //       padding: EdgeInsets.all(10.0),
+            //       child: CustomTextFormFieldWidget(
+            //         icon: Icon(Icons.phone),
+            //         hintText: "phone number",
+            //         type: TextInputType.phone,
+            //         validator: (value) {
+            //           if (value.isEmpty) {
+            //             return 'Please enter your phone number';
+            //           }
+            //           return null;
+            //         },
+            //         onSaved: (val) => setState(() => this.user.phone = val),
+            //       ),
+            //     ),
+            //     Padding(
+            //       padding: const EdgeInsets.symmetric(vertical: 16.0),
+            //       child: _isLoading == true
+            //           ? _showCircularProgress()
+            //           : RaisedButton(
+            //               onPressed: () async {
+            //                 // Validate returns true if the form is valid, or false
+            //                 // otherwise.
+            //                 _continuePressed();
+            //               },
+            //               child: Text('Continue'),
+            //             ),
+            //     ),
+            //   ],
+            // ),
           ),
         ),
       ),

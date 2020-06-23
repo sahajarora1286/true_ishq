@@ -1,18 +1,12 @@
 import 'package:provider/provider.dart';
 import 'package:true_ishq/screens/custom_swiper.dart';
 import 'package:true_ishq/screens/login_options.dart';
-import 'package:true_ishq/screens/swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:true_ishq/services/auth.service.dart';
 
 import 'models/user.dart';
 import 'screens/login_options.dart';
 import 'screens/register_picture.dart';
-import 'utilities/helpers.dart';
-import 'utilities/helpers.dart';
-import 'utilities/helpers.dart';
-import 'utilities/helpers.dart';
-import 'utilities/helpers.dart';
 
 // void main() => runApp(
 //       ChangeNotifierProvider<AuthService>(
@@ -43,7 +37,41 @@ class MyApp extends StatelessWidget {
           // or simply save your changes to "hot reload" in a Flutter IDE).
           // Notice that the counter didn't reset back to zero; the application
           // is not restarted.
+          primaryTextTheme: TextTheme(
+            title: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          primaryIconTheme: const IconThemeData.fallback().copyWith(
+            color: Colors.white,
+          ),
+          appBarTheme: AppBarTheme(
+            color: Colors.transparent,
+            elevation: 0
+          ),
+          backgroundColor: Color.fromRGBO(26, 26, 26, 1),
           primarySwatch: Colors.green,
+          primaryColor: Color.fromRGBO(230, 191, 80, 1),
+          accentColor: Colors.white,
+          // buttonColor: Color.fromRGBO(36, 209, 85, 1),
+          buttonColor: Color.fromRGBO(230, 191, 80, 1),
+          buttonTheme: ButtonThemeData(
+            minWidth: 180,
+            buttonColor: Color.fromRGBO(230, 191, 80, 1),
+            height: 50,
+            padding: EdgeInsets.all(15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            highlightColor: Colors.orange,
+            textTheme: ButtonTextTheme.accent,
+          ),
+          textTheme: TextTheme(
+            button: TextStyle(
+                color: Colors.white,
+                decorationColor: Colors.white,
+                fontSize: 17),
+          ),
         ),
         home: Consumer<AuthService>(
           builder: (context, authService, child) {
@@ -62,7 +90,9 @@ class MyApp extends StatelessWidget {
                         title: "Profile", user: currentUser);
                   }
                   // return MySwiperController(title: "True Ishq");
-                  return CustomSwiperController(title: "True Ishq",);
+                  return CustomSwiperController(
+                    title: "True Ishq",
+                  );
                 } else {
                   return LoginOptionsController(title: "True Ishq");
                 }

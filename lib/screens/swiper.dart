@@ -67,76 +67,75 @@ class _MySwiperControllerState extends State<MySwiperController> {
 
   @override
   Widget build(BuildContext context) {
-    authService = Provider.of<AuthService>(context);
-    printWrapped('swiper controller: currentUser: ');
-    printWrapped(authService.currentUser.toJson().toString());
+    // authService = Provider.of<AuthService>(context);
+    // printWrapped('swiper controller: currentUser: ');
+    // printWrapped(authService.currentUser.toJson().toString());
 
-    Size screenSize = MediaQuery.of(context).size;
+    // Size screenSize = MediaQuery.of(context).size;
 
-    return new Scaffold(
-      appBar: new AppBar(
-        centerTitle: true,
-        title: new Text(
-          widget.title,
-          textAlign: TextAlign.center,
-        ),
-        leading: new Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: new Material(
-            shape: new CircleBorder(),
-            child: Image(
-              fit: BoxFit.cover,
-              image: authService.currentUser.profile != null &&
-                      authService.currentUser.profile.profilePic != null
-                  ? new NetworkImage(authService.currentUser.profile.profilePic)
-                  : new ExactAssetImage(
-                      "assets/images/placeholders/person.jpg"),
-            ),
-            clipBehavior: Clip.antiAlias,
-          ),
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () {
-                authService.logout();
-              },
-              child: Icon(
-                Icons.exit_to_app,
-                size: 26.0,
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: (this.users.length > 0)
-          ? new Swiper(
-              layout: SwiperLayout.STACK,
-              itemWidth: screenSize.width - 20,
-              itemHeight: screenSize.height - 20,
-              itemBuilder: (BuildContext context, int index) {
-                return new ProfileCardWidget(
-                    user: this.users.length > index
-                        ? this.users[index]
-                        : new User(),
-                    swiperController: _controller);
-              },
-              itemCount: users.length,
-              pagination: null,
-              controller: _controller,
-              onIndexChanged: (int index) {
-                setState(() {
-                  this.users.removeAt(index - 1);
-                });
+    // return new Scaffold(
+    //   appBar: new AppBar(
+    //     centerTitle: true,
+    //     title: new Text(
+    //       widget.title,
+    //       textAlign: TextAlign.center,
+    //     ),
+    //     leading: new Padding(
+    //       padding: const EdgeInsets.all(8.0),
+    //       child: new Material(
+    //         shape: new CircleBorder(),
+    //         child: Image(
+    //           fit: BoxFit.cover,
+    //           image: authService.currentUser.profile != null &&
+    //                   authService.currentUser.profile.profilePic != null
+    //               ? new NetworkImage(authService.currentUser.profile.profilePic)
+    //               : new ExactAssetImage(
+    //                   "assets/images/placeholders/person.jpg"),
+    //         ),
+    //         clipBehavior: Clip.antiAlias,
+    //       ),
+    //     ),
+    //     actions: <Widget>[
+    //       Padding(
+    //         padding: EdgeInsets.only(right: 20.0),
+    //         child: GestureDetector(
+    //           onTap: () {
+    //             authService.logout();
+    //           },
+    //           child: Icon(
+    //             Icons.exit_to_app,
+    //             size: 26.0,
+    //           ),
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    //   body: (this.users.length > 0)
+    //       ? new Swiper(
+    //           layout: SwiperLayout.STACK,
+    //           itemWidth: screenSize.width - 20,
+    //           itemHeight: screenSize.height - 20,
+    //           itemBuilder: (BuildContext context, int index) {
+    //             return new ProfileCardWidget(
+    //                 user: this.users.length > index
+    //                     ? this.users[index]
+    //                     : new User());
+    //           },
+    //           itemCount: users.length,
+    //           pagination: null,
+    //           controller: _controller,
+    //           onIndexChanged: (int index) {
+    //             setState(() {
+    //               this.users.removeAt(index - 1);
+    //             });
 
-                likeUser(this.users[index - 1]);
-              },
-            )
-          : new Center(
-              child: isLoading ? CircularProgressIndicator() : Center(),
-            ),
-    );
+    //             likeUser(this.users[index - 1]);
+    //           },
+    //         )
+    //       : new Center(
+    //           child: isLoading ? CircularProgressIndicator() : Center(),
+    //         ),
+    // );
   }
 
   void likeUser(User user) async {

@@ -52,6 +52,7 @@ class _RegisterBasicControllerState extends State<RegisterBasicController> {
           textAlign: TextAlign.center,
         ),
       ),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Form(
         key: _formKey,
         child: Padding(
@@ -74,19 +75,19 @@ class _RegisterBasicControllerState extends State<RegisterBasicController> {
                       setState(() => user.profile.firstName = val),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: CustomTextFormFieldWidget(
-                  icon: Icon(Icons.person),
-                  hintText: "Occupation",
-                  type: TextInputType.text,
-                  validator: (value) {
-                    return null;
-                  },
-                  onSaved: (val) =>
-                      setState(() => this.user.profile.occupation = val),
-                ),
-              ),
+              // Container(
+              //   padding: EdgeInsets.all(10.0),
+              //   child: CustomTextFormFieldWidget(
+              //     icon: Icon(Icons.person),
+              //     hintText: "Occupation",
+              //     type: TextInputType.text,
+              //     validator: (value) {
+              //       return null;
+              //     },
+              //     onSaved: (val) =>
+              //         setState(() => this.user.profile.occupation = val),
+              //   ),
+              // ),
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: CustomTextFormFieldWidget(
@@ -148,7 +149,6 @@ class _RegisterBasicControllerState extends State<RegisterBasicController> {
                           _continuePressed();
                         },
                         child: Text('Continue'),
-                        color: Colors.orange,
                       ),
               ),
             ],

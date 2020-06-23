@@ -1,3 +1,4 @@
+import 'package:flutter_svg/svg.dart';
 import 'package:true_ishq/screens/login_phone.dart';
 import 'package:true_ishq/utilities/helpers.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,9 @@ class LoginOptionsController extends StatefulWidget {
 }
 
 class _LoginOptionsControllerState extends State<LoginOptionsController> {
+  final Widget svg = SvgPicture.asset('assets/images/logo_true_ishq.svg',
+      semanticsLabel: 'True Ishq Logo');
+
   @override
   void initState() {
     super.initState();
@@ -37,26 +41,65 @@ class _LoginOptionsControllerState extends State<LoginOptionsController> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        centerTitle: true,
-        title: new Text(
-          widget.title,
-          textAlign: TextAlign.center,
-        ),
-      ),
-      body: new Center(
-        child: new RaisedButton(
-          child: new Text("Log in with Phone Number"),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LoginPhoneController(
-                  title: "Phone Number",
-                ),
+      // appBar: new AppBar(
+      //   centerTitle: true,
+      //   title: new Text(
+      //     widget.title,
+      //     textAlign: TextAlign.center,
+      //   ),
+      // ),
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: svg,
+            ),
+            Expanded(
+              flex: 1,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(5, 20, 5, 25),
+                    child: new RaisedButton(
+                      highlightColor: Colors.blue,
+                      child: new Text("Log in with Phone Number"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginPhoneController(
+                              title: "Phone Number",
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(5, 10, 5, 90),
+                    child: new RaisedButton(
+                      child: new Text("Log in with Facebook"),
+                      color: Colors.blue,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginPhoneController(
+                              title: "Phone Number",
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
     );

@@ -87,6 +87,7 @@ class _RegisterPictureControllerState extends State<RegisterPictureController> {
           textAlign: TextAlign.center,
         ),
       ),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: new Center(
           child: new GestureDetector(
         onTap: getImage,
@@ -117,7 +118,6 @@ class _RegisterPictureControllerState extends State<RegisterPictureController> {
                           }
                         },
                         child: Text('Get Started'),
-                        color: Colors.orange,
                       ),
               ),
             ],

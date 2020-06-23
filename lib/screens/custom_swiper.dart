@@ -1,10 +1,10 @@
 import 'package:provider/provider.dart';
-import 'package:true_ishq/components/profile_card.dart';
+import 'package:true_ishq/components/profile_card_draggable.dart';
+import 'package:true_ishq/enums/like_dislike.dart';
 import 'package:true_ishq/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:true_ishq/services/auth.service.dart';
 import "../services/api/user-api.service.dart" as apiService;
-import '../utilities/helpers.dart';
 
 class CustomSwiperController extends StatefulWidget {
   CustomSwiperController({Key key, this.title}) : super(key: key);
@@ -30,9 +30,6 @@ class _CustomSwiperControllerState extends State<CustomSwiperController> {
 
   bool isLoading = false;
   AuthService authService;
-  Size _screenSize;
-  final double dragCompleteOffset = -80;
-  int currentIndex = 0;
 
   @override
   void initState() {
@@ -47,13 +44,11 @@ class _CustomSwiperControllerState extends State<CustomSwiperController> {
       });
     }
     await apiService.getUsers().then((users) {
-      // printWrapped("Users: ");
-      // print(jsonEncode(users));
       if (mounted) {
         setState(() {
           this.users = users;
 
-          cardList = _getMatchCard();
+          // cardList = _getMatchCard();
 
           isLoading = false;
         });
@@ -68,188 +63,37 @@ class _CustomSwiperControllerState extends State<CustomSwiperController> {
     });
   }
 
-  Widget _getDragTarget() {
-    return Container(
-      child: DragTarget(
-        builder: (context, List<String> candidateData, rejectedData) {
-          return Container(
-            color: Colors.black,
-            height: 900,
-            width: 600,
-          );
-        },
-        onWillAccept: (data) {
-          return true;
-        },
-        onAccept: (data) {
-          printWrapped('acceptedddd');
-          // accepted = true;
-        },
-      ),
-    );
-  }
-
-  List<Widget> _getMatchCard() {
-    List<Widget> cardList = new List();
-    double margin = 0;
-
-    // Left Drag Target
-    // cardList.add(
-    //   Positioned(
-    //     left: 0,
-    //     top: 0,
-    //     child: _getDragTarget(),
-    //     height: _screenSize.height,
-    //     width: 800,
-    //   ),
-    // );
-
-    // // Right Drag Taget
-    // cardList.add(
-    //   Positioned(
-    //     right: 0,
-    //     top: 0,
-    //     child: _getDragTarget(),
-    //     height: _screenSize.height,
-    //     width: 800,
-    //   ),
-    // );
-
-    for (int x = 0; x < this.users.length; x++) {
-      cardList.add(
-        Container(
-          child: Draggable(
-            onDragEnd: (drag) {
-              printWrapped('drag ended');
-              printWrapped(drag.offset.toString());
-
-              bool shouldRemoveUser = false;
-              if (drag.offset.dx < -150) {
-                // Swiped left
-                shouldRemoveUser = true;
-              } else if (drag.offset.dx > 150) {
-                // Swiped right
-                shouldRemoveUser = true;
-                likeUser(this.users[x]);
-              }
-
-              if (shouldRemoveUser) {
-                this.users.removeAt(x);
-                _removeCard(x);
-              }
-            },
-            onDragCompleted: () {
-              // printWrapped('drag complete');
-              //  this.users.removeAt(x);
-              // _removeCard(x);
-            },
-            childWhenDragging: Container(
-              width: 400,
-              height: _screenSize.height - (0.3 * _screenSize.height),
-            ),
-            feedback: Container(
-              child: new ProfileCardWidget(
-                user: this.users[x],
-              ),
-              width: _screenSize.width,
-              height: _screenSize.height - (0.1116 * _screenSize.height),
-            ),
-            child: new ProfileCardWidget(
-              user: this.users[x],
-            ),
-            data: this.users[x].id,
-          ),
-        ),
-      );
-    }
-
-    cardList.add(
-      new Positioned(
-        child: new Align(
-          alignment: FractionalOffset.bottomCenter,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(5, 5, 5, 25),
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                new RawMaterialButton(
-                  onPressed: () {
-                    // swipeRight(false);
-                  },
-                  child: new Icon(
-                    Icons.close,
-                    color: Colors.blue,
-                    size: 35.0,
-                  ),
-                  shape: new CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: Colors.white,
-                  padding: const EdgeInsets.all(15.0),
-                ),
-                new RawMaterialButton(
-                  onPressed: () {},
-                  child: new Icon(
-                    Icons.flash_on,
-                    color: Colors.purple,
-                    size: 35.0,
-                  ),
-                  shape: new CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: Colors.white,
-                  padding: const EdgeInsets.all(15.0),
-                ),
-                new RawMaterialButton(
-                  onPressed: () {
-                    // swipeRight(true);
-                  },
-                  child: new Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                    size: 35.0,
-                  ),
-                  shape: new CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: Colors.white,
-                  padding: const EdgeInsets.all(15.0),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-
-    return cardList;
-  }
-
   void _removeCard(index) {
     setState(() {
       cardList.removeAt(index);
     });
   }
 
+  void _swipeActionComplete(LikeDislike swipeResult, int userIndex) {
+    setState(() {
+      this.users.removeAt(userIndex);
+    });
+
+    // _removeCard(userIndex);
+  }
+
   @override
   Widget build(BuildContext context) {
     authService = Provider.of<AuthService>(context);
-    printWrapped('swiper controller: currentUser: ');
-    printWrapped(authService.currentUser.toJson().toString());
-
-    _screenSize = MediaQuery.of(context).size;
-    printWrapped("screen height: ");
-    printWrapped(_screenSize.height.toString());
-
-    bool accepted = false;
-
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,
         title: new Text(
           widget.title,
           textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+          ),
         ),
         leading: new Padding(
           padding: const EdgeInsets.all(8.0),
           child: new Material(
+            elevation: 30,
             shape: new CircleBorder(),
             child: Image(
               fit: BoxFit.cover,
@@ -272,22 +116,28 @@ class _CustomSwiperControllerState extends State<CustomSwiperController> {
               child: Icon(
                 Icons.exit_to_app,
                 size: 26.0,
+                color: Theme.of(context).backgroundColor,
               ),
             ),
           ),
         ],
       ),
       body: (this.users.length > 0)
-          ? new Stack(alignment: Alignment.center, children: cardList)
+          ? new Stack(
+              alignment: Alignment.center,
+              children: [
+                for (int x = 0; x < this.users.length; x++)
+                  Container(
+                    child: ProfileCardDraggableWidget(widget.key, this.users[x],
+                        (LikeDislike swipeResult) {
+                      this._swipeActionComplete(swipeResult, x);
+                    }),
+                  ),
+              ],
+            )
           : new Center(
               child: isLoading ? CircularProgressIndicator() : Center(),
             ),
     );
-  }
-
-  void likeUser(User user) async {
-    dynamic response = await apiService.likeUser(authService.currentUser, user);
-    printWrapped('response in widget: ');
-    printWrapped(response.toString());
   }
 }

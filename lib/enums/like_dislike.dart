@@ -1,0 +1,2 @@
+
+enum LikeDislike { LIKE, DISLIKE }

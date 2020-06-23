@@ -51,52 +51,97 @@ class _LoginPasswordControllerState extends State<LoginPasswordController> {
           textAlign: TextAlign.center,
         ),
       ),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Form(
         key: _formKey,
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: ListView(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: CustomTextFormFieldWidget(
-                  icon: Icon(Icons.lock),
-                  hintText: "password",
-                  type: TextInputType.text,
-                  obscureText: true,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                  onSaved: (val) => setState(() => this.user.password = val),
-                ),
-              ),
-              ConditionalBuilder(
-                condition: errorMessage != null,
-                builder: (context) => Text(
-                  errorMessage != null ? errorMessage : '',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.red,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: CustomTextFormFieldWidget(
+                    icon: Icon(Icons.lock),
+                    hintText: "password",
+                    type: TextInputType.text,
+                    obscureText: true,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      return null;
+                    },
+                    onSaved: (val) => setState(() => this.user.password = val),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: _isLoading == true
-                    ? _showCircularProgress()
-                    : RaisedButton(
-                        onPressed: () async {
-                          _loginPressed();
-                        },
-                        child: Text('Login'),
-                        color: Colors.orange,
-                      ),
-              ),
-            ],
+                ConditionalBuilder(
+                  condition: errorMessage != null,
+                  builder: (context) => Text(
+                    errorMessage != null ? errorMessage : '',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: _isLoading == true
+                      ? _showCircularProgress()
+                      : RaisedButton(
+                          onPressed: () async {
+                            _loginPressed();
+                          },
+                          child: Text('Login'),
+                        ),
+                ),
+              ],
+            ),
           ),
+
+          //  ListView(
+          //   children: <Widget>[
+          //     Container(
+          //       padding: EdgeInsets.all(10.0),
+          //       child: CustomTextFormFieldWidget(
+          //         icon: Icon(Icons.lock),
+          //         hintText: "password",
+          //         type: TextInputType.text,
+          //         obscureText: true,
+          //         validator: (value) {
+          //           if (value.isEmpty) {
+          //             return 'Please enter your password';
+          //           }
+          //           return null;
+          //         },
+          //         onSaved: (val) => setState(() => this.user.password = val),
+          //       ),
+          //     ),
+          //     ConditionalBuilder(
+          //       condition: errorMessage != null,
+          //       builder: (context) => Text(
+          //         errorMessage != null ? errorMessage : '',
+          //         textAlign: TextAlign.center,
+          //         style: TextStyle(
+          //           color: Colors.red,
+          //         ),
+          //       ),
+          //     ),
+          //     Padding(
+          //       padding: const EdgeInsets.symmetric(vertical: 16.0),
+          //       child: _isLoading == true
+          //           ? _showCircularProgress()
+          //           : RaisedButton(
+          //               onPressed: () async {
+          //                 _loginPressed();
+          //               },
+          //               child: Text('Login'),
+          //             ),
+          //     ),
+          //   ],
+          // ),
         ),
       ),
     );

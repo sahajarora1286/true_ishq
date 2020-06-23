@@ -1,23 +1,33 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:true_ishq/enums/like_dislike.dart';
 import 'package:true_ishq/models/user.dart';
 import 'package:flutter/material.dart';
-import 'package:true_ishq/utilities/helpers.dart';
 
-class ProfileCardWidget extends StatelessWidget {
-  ProfileCardWidget({Key key, this.user, this.swiperController})
-      : super(key: key);
+class ProfileCardWidget extends StatefulWidget {
+  ProfileCardWidget(Key key, this.user) : super(key:key);
 
   final User user;
-  final SwiperController swiperController;
 
-  String image = "assets/images/placeholders/person.jpg";
+  final String image = "assets/images/placeholders/person.jpg";
 
-  void swipeRight(bool isLike) {
-    printWrapped('swiping right');
-    swiperController.next(animation: true);
+  @override
+  ProfileCardState createState() => ProfileCardState();
+}
+
+class ProfileCardState extends State<ProfileCardWidget> {
+  LikeDislike _swipingState;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  updateSwipingState(LikeDislike swipingState) {
+    setState(() {
+      _swipingState = swipingState;
+    });
   }
 
   @override
@@ -42,32 +52,42 @@ class ProfileCardWidget extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   flex: 2,
-                  child: new Container(
-                    width: screenSize.width / 1.2 + cardWidth,
-                    height: screenSize.height - (0.5 * screenSize.height),
-                    // decoration: new BoxDecoration(
-                    //   borderRadius: new BorderRadius.only(
-                    //       topLeft: new Radius.circular(8.0),
-                    //       topRight: new Radius.circular(8.0)),
-                    //   image: new DecorationImage(
-                    //     image: user.profile.profilePic != null
-                    //         ?
-                    //         //  new NetworkImage(user.profile.profilePic)
-                    //         // ? new ExactAssetImage(image)
-                    //         : new ExactAssetImage(image),
-                    //     fit: BoxFit.cover,
-                    //   ),
-                    // ),
-                    child: new CachedNetworkImage(
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) =>
-                              CircularProgressIndicator(
-                                  value: downloadProgress.progress),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      imageUrl: user.profile.profilePic != null
-                          ? user.profile.profilePic
-                          : image,
-                    ),
+                  child: new Stack(
+                    overflow: Overflow.clip,
+                    fit: StackFit.expand,
+                    children: <Widget>[
+                      new Container(
+                        width: screenSize.width / 1.2 + cardWidth,
+                        height: screenSize.height - (0.5 * screenSize.height),
+                        child: new CachedNetworkImage(
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  CircularProgressIndicator(
+                                      value: downloadProgress.progress),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                          imageUrl: widget.user.profile.profilePic != null
+                              ? widget.user.profile.profilePic
+                              : widget.image,
+                        ),
+                      ),
+                      Visibility(
+                        visible: _swipingState == LikeDislike.LIKE,
+                        child: new Positioned(
+                          top: 20,
+                          left: 40,
+                          child: _getLikeDislikeWidget(LikeDislike.LIKE),
+                        ),
+                      ),
+                      Visibility(
+                        visible: _swipingState == LikeDislike.DISLIKE,
+                        child: new Positioned(
+                          top: 20,
+                          right: 40,
+                          child: _getLikeDislikeWidget(LikeDislike.DISLIKE),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
@@ -78,7 +98,7 @@ class ProfileCardWidget extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         padding: EdgeInsets.all(20.0),
                         child: new Text(
-                          user.profile.firstName,
+                          widget.user.profile.firstName,
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -91,7 +111,7 @@ class ProfileCardWidget extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         padding: EdgeInsets.fromLTRB(20, 0, 10, 20),
                         child: new Text(
-                          user.profile.occupation,
+                          widget.user.profile.occupation,
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -121,6 +141,33 @@ class ProfileCardWidget extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _getLikeDislikeWidget(LikeDislike likeDislike) {
+    return Container(
+      child: Padding(
+        child: Material(
+          color: Colors.transparent,
+          child: Text(
+            likeDislike == LikeDislike.LIKE ? "LIKE" : "NOPE",
+            style: TextStyle(
+                color:
+                    likeDislike == LikeDislike.LIKE ? Colors.green : Colors.red,
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                backgroundColor: Colors.transparent),
+          ),
+        ),
+        padding: EdgeInsets.all(15),
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: likeDislike == LikeDislike.LIKE ? Colors.green : Colors.red,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(5),
       ),
     );
   }
