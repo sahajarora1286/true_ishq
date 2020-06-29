@@ -15,7 +15,9 @@ class Profile {
       this.firstName,
       this.lastName,
       this.occupation,
-      this.description});
+      this.description,
+      this.age,
+      this.height});
 
   @JsonKey(name: '_id')
   String id;
@@ -28,6 +30,8 @@ class Profile {
   String lastName;
   String occupation;
   String description;
+  int age;
+  double height;
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$ProfileFromJson()` constructor.

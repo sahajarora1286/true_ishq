@@ -55,8 +55,9 @@ class _LoginPhoneControllerState extends State<LoginPhoneController> {
               children: [
                 CustomTextFormFieldWidget(
                   icon: Icon(Icons.phone),
-                  hintText: "phone number",
+                  hintText: "Please enter your phone number",
                   type: TextInputType.phone,
+                  autofocus: true,
                   validator: (value) {
                     if (value.isEmpty) {
                       return 'Please enter your phone number';
@@ -80,39 +81,6 @@ class _LoginPhoneControllerState extends State<LoginPhoneController> {
                 ),
               ],
             ),
-
-            // child: ListView(
-            //   children: <Widget>[
-            //     Container(
-            //       padding: EdgeInsets.all(10.0),
-            //       child: CustomTextFormFieldWidget(
-            //         icon: Icon(Icons.phone),
-            //         hintText: "phone number",
-            //         type: TextInputType.phone,
-            //         validator: (value) {
-            //           if (value.isEmpty) {
-            //             return 'Please enter your phone number';
-            //           }
-            //           return null;
-            //         },
-            //         onSaved: (val) => setState(() => this.user.phone = val),
-            //       ),
-            //     ),
-            //     Padding(
-            //       padding: const EdgeInsets.symmetric(vertical: 16.0),
-            //       child: _isLoading == true
-            //           ? _showCircularProgress()
-            //           : RaisedButton(
-            //               onPressed: () async {
-            //                 // Validate returns true if the form is valid, or false
-            //                 // otherwise.
-            //                 _continuePressed();
-            //               },
-            //               child: Text('Continue'),
-            //             ),
-            //     ),
-            //   ],
-            // ),
           ),
         ),
       ),

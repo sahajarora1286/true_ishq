@@ -8,6 +8,9 @@ class CustomTextFormFieldWidget extends StatefulWidget {
       this.validator,
       this.type,
       this.obscureText = false,
+      this.maxLines = 1,
+      this.readonly = false,
+      this.autofocus = false,
       this.onSaved})
       : super(key: key);
 
@@ -16,6 +19,9 @@ class CustomTextFormFieldWidget extends StatefulWidget {
   final String Function(String) validator;
   final TextInputType type;
   final bool obscureText;
+  final int maxLines;
+  final bool readonly;
+  final bool autofocus;
   final void Function(String) onSaved;
 
   @override
@@ -26,19 +32,29 @@ class _CustomTextFormFieldState extends State<CustomTextFormFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: TextStyle(
+        color: Colors.white,
+      ),
+      readOnly: widget.readonly,
+      maxLines: widget.maxLines,
+      autocorrect: true,
+      enableSuggestions: true,
       keyboardType: widget.type,
       obscureText: widget.obscureText,
+      autofocus: widget.autofocus,
       decoration: InputDecoration(
-        icon: widget.icon,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
+        prefixIcon: Icon(
+          widget.icon.icon,
+          color: Colors.white,
         ),
-        filled: true,
-        hintStyle: new TextStyle(color: Colors.grey[800]),
+        focusColor: Theme.of(context).primaryColor,
+        border: InputBorder.none,
+        filled: false,
+        hintStyle: new TextStyle(color: Colors.grey[600]),
         hintText: widget.hintText,
         fillColor: Colors.white70,
       ),
-      textAlign: TextAlign.center,
+      textAlign: TextAlign.left,
       validator: widget.validator,
       onSaved: widget.onSaved,
     );

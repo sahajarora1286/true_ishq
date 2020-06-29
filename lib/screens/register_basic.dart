@@ -1,9 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:true_ishq/components/custom_text_form_field.dart';
 import 'package:true_ishq/models/profile.dart';
 import 'package:true_ishq/models/user.dart';
-import 'package:true_ishq/screens/register_picture.dart';
-import 'package:true_ishq/screens/swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:true_ishq/services/auth.service.dart';
 import "../services/api/user-api.service.dart" as apiService;
@@ -33,6 +32,7 @@ class _RegisterBasicControllerState extends State<RegisterBasicController> {
   User user = new User(profile: new Profile());
   bool _isLoading;
   var authService;
+  int _selectedGenderValue = 0;
 
   @override
   void initState() {
@@ -59,12 +59,14 @@ class _RegisterBasicControllerState extends State<RegisterBasicController> {
           padding: EdgeInsets.all(16.0),
           child: ListView(
             children: <Widget>[
+              _getGenderSegmentedControl(),
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: CustomTextFormFieldWidget(
                   icon: Icon(Icons.person),
                   hintText: "Name",
                   type: TextInputType.text,
+                  autofocus: true,
                   validator: (value) {
                     if (value.isEmpty) {
                       return 'Please enter your first name';
@@ -165,6 +167,29 @@ class _RegisterBasicControllerState extends State<RegisterBasicController> {
     return Container(
       height: 0.0,
       width: 0.0,
+    );
+  }
+
+  Widget _getGenderSegmentedControl() {
+    return CupertinoSegmentedControl(
+      children: <int, Widget>{
+        0: Padding(
+          padding: EdgeInsets.all(10),
+          child: Text("Male"),
+        ),
+        1: Padding(
+          padding: EdgeInsets.all(10),
+          child: Text("Female"),
+        ),
+      },
+      padding: EdgeInsets.all(30),
+      groupValue: _selectedGenderValue,
+      selectedColor: Theme.of(context).primaryColor,
+      borderColor: Theme.of(context).primaryColor,
+      pressedColor: Theme.of(context).primaryColor,
+      onValueChanged: (value) {
+        setState(() => _selectedGenderValue = value);
+      },
     );
   }
 

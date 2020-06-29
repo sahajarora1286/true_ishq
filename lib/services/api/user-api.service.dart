@@ -34,6 +34,30 @@ Future<User> createUser(User user) async {
   }
 }
 
+Future<User> updateUserProfile(User user) async {
+  printWrapped("sending user json: ");
+  printWrapped(convert.jsonEncode(user.toJson()));
+  var uri = Uri.http(ApiConfig.apiUrl, '/api/users/profile');
+
+  http.Response response = await http.post(
+    uri,
+    headers: {"Content-Type": "application/json", "Accept": "application/json"},
+    body: convert.jsonEncode(user.toJson()),
+  );
+
+  printWrapped(response.body);
+  printWrapped(response.statusCode.toString());
+
+  if (response.statusCode == 200) {
+    User user = User.fromJson(convert.jsonDecode(response.body));
+    printWrapped("returning user: ");
+    printWrapped(user.toString());
+    return user;
+  } else {
+    throw convert.jsonDecode(response.body);
+  }
+}
+
 Future<dynamic> likeUser(User user, User likeUser) async {
   printWrapped("sending user json: ");
   printWrapped(convert.jsonEncode(user.toJson()));

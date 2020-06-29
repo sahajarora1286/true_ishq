@@ -124,7 +124,7 @@ class ProfileCardState extends State<ProfileCardWidget> {
                         alignment: Alignment.center,
                         padding: EdgeInsets.fromLTRB(20, 0, 10, 20),
                         child: new Text(
-                          'This is my profile description. My profile is the best profile there is and there are no doubts about it.',
+                          widget.user.profile.description != null ? widget.user.profile.description : 'No description',
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

@@ -67,6 +67,7 @@ class _LoginPasswordControllerState extends State<LoginPasswordController> {
                     hintText: "password",
                     type: TextInputType.text,
                     obscureText: true,
+                    autofocus: true,
                     validator: (value) {
                       if (value.isEmpty) {
                         return 'Please enter your password';

@@ -6,7 +6,7 @@ import 'package:true_ishq/services/auth.service.dart';
 
 import 'models/user.dart';
 import 'screens/login_options.dart';
-import 'screens/register_picture.dart';
+import 'screens/edit_profile.dart';
 
 // void main() => runApp(
 //       ChangeNotifierProvider<AuthService>(
@@ -45,12 +45,9 @@ class MyApp extends StatelessWidget {
           primaryIconTheme: const IconThemeData.fallback().copyWith(
             color: Colors.white,
           ),
-          appBarTheme: AppBarTheme(
-            color: Colors.transparent,
-            elevation: 0
-          ),
+          appBarTheme: AppBarTheme(color: Colors.transparent, elevation: 0),
           backgroundColor: Color.fromRGBO(26, 26, 26, 1),
-          primarySwatch: Colors.green,
+          // primarySwatch: MaterialColor(Colors.white, swatch),
           primaryColor: Color.fromRGBO(230, 191, 80, 1),
           accentColor: Colors.white,
           // buttonColor: Color.fromRGBO(36, 209, 85, 1),
@@ -68,9 +65,10 @@ class MyApp extends StatelessWidget {
           ),
           textTheme: TextTheme(
             button: TextStyle(
-                color: Colors.white,
-                decorationColor: Colors.white,
-                fontSize: 17),
+              color: Colors.white,
+              decorationColor: Colors.white,
+              fontSize: 17,
+            ),
           ),
         ),
         home: Consumer<AuthService>(
@@ -86,7 +84,7 @@ class MyApp extends StatelessWidget {
                   }
 
                   if (currentUser.profile.profilePic == null) {
-                    return RegisterPictureController(
+                    return EditProfileController(
                         title: "Profile", user: currentUser);
                   }
                   // return MySwiperController(title: "True Ishq");
