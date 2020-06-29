@@ -71,14 +71,14 @@ class _EditProfileControllerState extends State<EditProfileController> {
 
         await apiService.updateUserProfile(this.user);
 
-        // await authService.loginUser(user);
+        await authService.loginUser(user);
 
         setState(() {
           _isLoading = false;
         });
 
-        // Navigator.popUntil(
-        //     context, ModalRoute.withName(Navigator.defaultRouteName));
+        Navigator.popUntil(
+            context, ModalRoute.withName(Navigator.defaultRouteName));
       },
     ).catchError((error) {
       setState(() {
